@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as tf from '@tensorflow/tfjs';
 import * as tmPose from '@teachablemachine/pose';
+import './ExerciseContainer.css';
 
 const webcamHeight = 700;
 const webcamWidth = 700;
@@ -12,10 +13,11 @@ const ExerciseContainer = () => {
   const [model, setModel] = useState(null);
   const [maxPredictions, setMaxPredictions] = useState(0);
   const canvasRef = useRef(null);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     const init = async () => {
-      const path = 'https://teachablemachine.withgoogle.com/models/lAMuC8mGv/';
+      const path = 'https://teachablemachine.withgoogle.com/models/KJRP6ylE8/';
       const modelPath = path + 'model.json';
       const metadataPath = path + 'metadata.json';
 
@@ -84,7 +86,9 @@ const ExerciseContainer = () => {
 
   return (
     <div>
-      <canvas ref={canvasRef} width={webcamWidth} height={webcamHeight} />
+      <div>
+        <canvas id="cam_canvas" ref={canvasRef} width={webcamWidth} height={webcamHeight} />
+      </div>
       <div id="label-container">
         {Array.from({ length: maxPredictions }, (_, i) => (
           <div key={i} />
