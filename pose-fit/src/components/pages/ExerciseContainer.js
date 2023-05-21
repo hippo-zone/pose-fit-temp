@@ -8,6 +8,7 @@ const webcamWidth = 600;
 
 const ExerciseContainer = () => {
   const inputExercise = 'squat'; // 사용자가 입력한 운동 종목, 로컬 스토리지에서 가져오기
+  const inputReps = 5; // 사용자가 입력한 1세트 당 횟수, 로컬 스토리지에서 가져오기
   const [ctx, setCtx] = useState(null);
   const [webcam, setWebcam] = useState(null);
   const [model, setModel] = useState(null);
@@ -100,7 +101,7 @@ const ExerciseContainer = () => {
       <canvas id="cam_canvas" ref={canvasRef} width={webcamWidth} height={webcamHeight} />
       <div id="reps">
         <div>Reps</div>
-        <div>{count} / 5</div>
+        <div>{count} / {inputReps}</div>
       </div>
       <div id="label-container">
         {Array.from({ length: maxPredictions }, (_, i) => (
