@@ -3,21 +3,23 @@ import * as tf from '@tensorflow/tfjs';
 import * as tmPose from '@teachablemachine/pose';
 import './ExerciseContainer.css';
 
-const webcamHeight = 700;
-const webcamWidth = 700;
+const webcamHeight = 600;
+const webcamWidth = 600;
 
 const ExerciseContainer = () => {
+  const inputExercise = 'squat'; // 사용자가 입력한 운동 종목, 로컬 스토리지에서 가져오기
   const [ctx, setCtx] = useState(null);
-  const [labelContainer, setLabelContainer] = useState(null);
   const [webcam, setWebcam] = useState(null);
   const [model, setModel] = useState(null);
-  const [maxPredictions, setMaxPredictions] = useState(0);
   const canvasRef = useRef(null);
   const [count, setCount] = useState(0);
+  const [status, setStatus] = useState(inputExercise + '-prepare');
+  const [labelContainer, setLabelContainer] = useState(null);
+  const [maxPredictions, setMaxPredictions] = useState(0);
 
   useEffect(() => {
     const init = async () => {
-      const path = 'https://teachablemachine.withgoogle.com/models/KJRP6ylE8/';
+      const path = 'https://teachablemachine.withgoogle.com/models/RZqX0XVUT/';
       const modelPath = path + 'model.json';
       const metadataPath = path + 'metadata.json';
 
@@ -66,6 +68,15 @@ const ExerciseContainer = () => {
         //     prediction[i].className + ': ' + prediction[i].probability.toFixed(2);
         //   labelContainer.childNodes[i].innerHTML = classPrediction;
         // }
+        
+        if(prediction[1].probability.toFixed(2) == 1.00) {
+          if(status === inputExercise) {
+            setCount(count + 1);
+          }
+          setStatus(inputExercise + '-prepare');
+        } else if(prediction[0].probability.toFixed(2) == 1.00) {
+          setStatus(inputExercise);
+        }
 
         drawPose(pose);
       };
@@ -82,12 +93,14 @@ const ExerciseContainer = () => {
 
       window.requestAnimationFrame(loop);
     }
-  }, [webcam, ctx, labelContainer, model, maxPredictions]);
+  }, [webcam, ctx, labelContainer, model, maxPredictions, status]);
 
   return (
     <div>
-      <div>
-        <canvas id="cam_canvas" ref={canvasRef} width={webcamWidth} height={webcamHeight} />
+      <canvas id="cam_canvas" ref={canvasRef} width={webcamWidth} height={webcamHeight} />
+      <div id="reps">
+        <div>Reps</div>
+        <div>{count} / 5</div>
       </div>
       <div id="label-container">
         {Array.from({ length: maxPredictions }, (_, i) => (
